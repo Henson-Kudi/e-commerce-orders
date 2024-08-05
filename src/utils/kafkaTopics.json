@@ -1,0 +1,7 @@
+{
+  "orderUpdated": "orderUpdated",
+  "orderCreated": "orderCreated",
+  "orderDeleted": "orderDeleted",
+  "orderCancelled": "orderCancelled",
+  "ordersDeleted": "orderesDeleted"
+}
