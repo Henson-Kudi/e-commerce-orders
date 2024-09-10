@@ -3,5 +3,10 @@
   "orderCreated": "orderCreated",
   "orderDeleted": "orderDeleted",
   "orderCancelled": "orderCancelled",
-  "ordersDeleted": "orderesDeleted"
+  "ordersDeleted": "ordersDeleted",
+
+  "stripePaymentSucceeded": "stripePaymentSucceeded",
+  "codPaymentCreated": "codPaymentCreated",
+  "tabbyPaymentSucceeded": "tabbyPaymentSucceeded",
+  "paymentUpdated": "paymentUpdated"
 }

@@ -11,10 +11,10 @@ import cancelOrder from './handlers/cancelOrder';
 const router = Router();
 
 // Define your routes here
-router.route('/').get(getOrders).post(createOrder).delete(deleteOrders)
+router.route('/').get(getOrders).post(createOrder).delete(deleteOrders);
 
-router.route('/:id').get(getOrder).put(updateOrder).delete(cancelOrder)
+router.route('/:id').get(getOrder).put(updateOrder).delete(cancelOrder);
 
-router.delete('/delete-order/:id', deleteOrder)
+router.delete('/delete-order/:id', deleteOrder);
 
 export default router;
