@@ -8,8 +8,9 @@ import IUseCase from './protocol';
 
 export default class GetOrdersUseCase
   implements
-  IUseCase<FindOrdersQuery, Promise<IReturnValueWithPagination<Order[]>>> {
-  constructor(private readonly orderRepository: IOrdersRepository) { }
+    IUseCase<FindOrdersQuery, Promise<IReturnValueWithPagination<Order[]>>>
+{
+  constructor(private readonly orderRepository: IOrdersRepository) {}
 
   async execute(
     params: FindOrdersQuery
@@ -19,8 +20,6 @@ export default class GetOrdersUseCase
       page: params.options?.page,
       limit: params.options?.limit,
     });
-
-    console.log(params)
 
     const total = await this.orderRepository.countOrders({ where: query });
 

@@ -4,6 +4,8 @@ CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PACKAGING', 'CANCELLED', 'OUT_FOR
 -- CreateTable
 CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
+    "serialNumber" SERIAL NOT NULL,
+    "refNumber" TEXT NOT NULL,
     "userId" TEXT,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -14,7 +16,6 @@ CREATE TABLE "Order" (
     "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "shippingAddressId" TEXT NOT NULL,
     "paymentId" TEXT NOT NULL,
 
     CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
@@ -25,6 +26,8 @@ CREATE TABLE "OrderItem" (
     "id" TEXT NOT NULL,
     "orderId" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
+    "productName" TEXT NOT NULL,
+    "productSKU" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "total" DOUBLE PRECISION NOT NULL,
@@ -36,18 +39,34 @@ CREATE TABLE "OrderItem" (
 -- CreateTable
 CREATE TABLE "ShippingAddress" (
     "id" TEXT NOT NULL,
-    "userId" TEXT,
+    "orderId" TEXT NOT NULL,
+    "buildingName" TEXT,
+    "landmark" TEXT,
+    "roomNo" TEXT,
+    "floor" TEXT,
     "address" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "state" TEXT NOT NULL,
     "country" TEXT NOT NULL,
-    "zipCode" TEXT NOT NULL,
+    "zipCode" TEXT,
 
     CONSTRAINT "ShippingAddress_pkey" PRIMARY KEY ("id")
 );
 
--- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_shippingAddressId_fkey" FOREIGN KEY ("shippingAddressId") REFERENCES "ShippingAddress"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_serialNumber_key" ON "Order"("serialNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Order_refNumber_key" ON "Order"("refNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "OrderItem_orderId_productId_key" ON "OrderItem"("orderId", "productId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ShippingAddress_orderId_key" ON "ShippingAddress"("orderId");
 
 -- AddForeignKey
-ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ShippingAddress" ADD CONSTRAINT "ShippingAddress_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;

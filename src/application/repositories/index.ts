@@ -18,4 +18,6 @@ export default interface IOrdersRepository {
   deleteOrders(
     params: Prisma.OrderDeleteManyArgs
   ): Promise<Prisma.BatchPayload>;
+
+  findLastOrder(): Promise<Order | null>
 }

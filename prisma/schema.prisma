@@ -16,6 +16,8 @@ datasource db {
 // Define your database models below
 model Order {
   id              String           @id @default(uuid())
+  serialNumber    Int     @unique @default(autoincrement())
+  refNumber       String  @unique // generated from serialNumber.
   userId          String? // References user ID from Auth service
   name            String
   email           String

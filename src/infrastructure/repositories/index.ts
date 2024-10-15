@@ -7,6 +7,13 @@ import { FindOrdersOptions } from '../../domain/dtos';
 
 // Implementation of all database repositories defined in application/repositories
 export default class OrdersRepository implements IOrdersRepository {
+  async findLastOrder(): Promise<Order | null> {
+    return (await database.order.findMany({
+      orderBy: { serialNumber: 'desc' },
+      take: 1,
+      skip: 0
+    }))[0]
+  }
   createOrder(data: Prisma.OrderCreateArgs): Promise<Order> {
     return database.order.create(data);
   }
