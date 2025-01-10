@@ -8,7 +8,6 @@ export class GetOrdersController
   implements IContoller<Promise<IReturnValueWithPagination<Order[]>>>
 {
   handle(request: RequestObject): Promise<IReturnValueWithPagination<Order[]>> {
-    console.log(request.query)
     return ordersService.getOrders(request.query ?? {});
   }
 }

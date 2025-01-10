@@ -8,20 +8,38 @@ import {
   MessageSubscriptionParams,
   PublishMessageParams,
 } from '../../domain/dtos/messageBroker';
+import path from 'path';
+import envConf from '../../env.conf';
 
 export class MessageBroker implements IMessageBroker {
   private producer: Kafka.Producer;
   private consumer: Kafka.KafkaConsumer;
+  private readonly caKey = path.join(envConf.baseDir, 'certs/ca.pem')
+  private readonly serviceCert = path.join(envConf.baseDir, 'certs/service.cert')
+  private readonly serviceKey = path.join(envConf.baseDir, 'certs/service.key')
 
   constructor() {
     const config = getKafkaConfig('kafkaclient.properties');
+    
 
-    this.producer = new Kafka.Producer(config);
+    this.producer = new Kafka.Producer({
+      'metadata.broker.list': envConf.kafka.url,
+      'security.protocol': 'ssl',
+      'ssl.ca.location': this.caKey,
+      'ssl.certificate.location': this.serviceCert,
+      'ssl.key.location': this.serviceKey,
+      'log.connection.close': true
+    });
 
     this.consumer = new Kafka.KafkaConsumer(
       {
-        ...config,
+        'security.protocol': 'ssl',
+        'ssl.ca.location': this.caKey,
+        'ssl.certificate.location': this.serviceCert,
+        'ssl.key.location': this.serviceKey,
+        'log.connection.close': true,
         'group.id': 'orders-group',
+        'metadata.broker.list': envConf.kafka.url,
       },
       {
         'auto.offset.reset': 'earliest',

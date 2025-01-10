@@ -9,7 +9,7 @@ const OrderItem = Joi.object({
   quantity: Joi.number().positive().required().greater(0),
   price: Joi.number().positive().required(),
   total: Joi.number().positive().required(),
-  tax: Joi.number().positive().required(),
+  tax: Joi.number().min(0).required(),
 });
 
 const ShippingAddress = Joi.object({
@@ -36,6 +36,10 @@ const CrteateOrder = Joi.object({
   orderItems: Joi.array().items(OrderItem).required().min(1),
   shippingAddress: ShippingAddress,
   paymentId: Joi.string().required(),
+  status: Joi.string()
+    .optional()
+    .valid(...Object.keys(OrderStatus))
+    .default(OrderStatus.PENDING),
 });
 
 const UpdateOrder = Joi.object({

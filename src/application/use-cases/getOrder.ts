@@ -19,11 +19,11 @@ export default class GetOrderUseCase
   }
   async execute(params: {
     id: string;
-    options: FindOrdersOptions;
+    options?: FindOrdersOptions;
   }): Promise<IReturnValue<Order>> {
     const order = await this.orderRepository.findOrderById(params.id, {
-      withItems: params.options.withItems !== false,
-      withShippingAddress: params.options.withShippingAddress !== false,
+      withItems: params?.options?.withItems !== false,
+      withShippingAddress: params?.options?.withShippingAddress !== false,
     });
 
     if (!order) {

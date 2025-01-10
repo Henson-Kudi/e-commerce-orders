@@ -40,6 +40,7 @@ export type CreateOrderDTO = {
   orderItems: OrderItemDTO[];
   shippingAddress: ShippingAddressDTO;
   paymentId: string;
+  status?: OrderStatus;
 };
 
 export type UpdateOrderDTO = {
@@ -70,6 +71,7 @@ export type FindOrdersFilter = {
   productName?: string | string[];
   productSKU?: string | string[];
   paymentId?: string | string[];
+  search?: string
 };
 export type FindOrdersOptions = {
   withShippingAddress?: boolean;

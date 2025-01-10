@@ -3,6 +3,8 @@ import { CreateOrderDTO, UpdateOrderDTO } from '../../../domain/dtos';
 import ordersService from '../../services';
 import logger from '../../../utils/logger';
 import { Message } from 'node-rdkafka';
+import { OrderStatus } from '@prisma/client';
+import { subscriptions } from '../../../utils/kafkaTopics.json';
 
 export class PaymentMadeConsumer implements IUseCase<Message, Promise<void>> {
   async execute(payload: Message): Promise<void> {
@@ -10,6 +12,12 @@ export class PaymentMadeConsumer implements IUseCase<Message, Promise<void>> {
       if (!payload.value) {
         return;
       }
+
+      const topic = payload.topic;
+
+      const orderStatus = [subscriptions.paymentFailed, subscriptions.paymentCancelled].includes(topic)
+        ? OrderStatus.CANCELLED
+        : undefined;
 
       const parsedValue = JSON.parse(payload.value.toString());
 
@@ -23,26 +31,47 @@ export class PaymentMadeConsumer implements IUseCase<Message, Promise<void>> {
         shippingAddress: parsedValue.shippingAddress,
         orderItems: parsedValue.orderItems,
         totalAmount: parsedValue.totalAmount,
-        userId: parsedValue?.userId,
+        userId: parsedValue?.userId
       };
 
       // If payload is parsed successfully, ensure that there is not already an order in the  system with that payment id
-      const foundOrder = await ordersService.getOrders({
-        filter: {
-          paymentId: parsedValue.paymentId,
-        },
-      });
+      if (parsedValue.orderId) {
+        const order = await ordersService.getOrder({ id: parsedValue.orderId, options: {} })
 
-      if (foundOrder.data?.data.length) {
-        // Update the order instead
-        const order = foundOrder.data.data[0];
-
-        await ordersService.updateOrder({
-          id: order.id,
-          data: orderData as UpdateOrderDTO,
-        });
+        if (order.data) {
+          await ordersService.updateOrder({
+            id: order.data.id,
+            data: {
+              // ...orderData,
+              status: orderStatus || order.data.status,
+              paymentId: parsedValue.paymentId
+            }
+          });
+        }
       } else {
-        await ordersService.createOrder(orderData);
+        const foundOrder = await ordersService.getOrders({
+          filter: {
+            paymentId: parsedValue.paymentId,
+          },
+        });
+
+        if (foundOrder.data?.data.length) {
+          // Update the order instead
+          const order = foundOrder.data.data[0];
+
+          await ordersService.updateOrder({
+            id: order.id,
+            data: {
+              ...orderData,
+              status: orderStatus || order.status,
+            } as UpdateOrderDTO,
+          });
+        } else {
+          await ordersService.createOrder({
+            ...orderData,
+            status: orderStatus,
+          });
+        }
       }
     } catch (err) {
       logger.error((err as Error).message, err);

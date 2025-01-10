@@ -8,9 +8,8 @@ import IUseCase from './protocol';
 
 export default class GetOrdersUseCase
   implements
-    IUseCase<FindOrdersQuery, Promise<IReturnValueWithPagination<Order[]>>>
-{
-  constructor(private readonly orderRepository: IOrdersRepository) {}
+  IUseCase<FindOrdersQuery, Promise<IReturnValueWithPagination<Order[]>>> {
+  constructor(private readonly orderRepository: IOrdersRepository) { }
 
   async execute(
     params: FindOrdersQuery

@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -24,6 +25,7 @@ model Order {
   phone           String
   totalAmount     Float
   discount        Float            @default(0) //Value of discount (if any)
+  discountId      String?  //id of applied discount (from discount service)
   currency        String
   status          OrderStatus      @default(PENDING)
   createdAt       DateTime         @default(now())

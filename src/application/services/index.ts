@@ -50,7 +50,7 @@ export class OrdersService {
     );
   }
 
-  getOrder(params: { id: string; options: FindOrdersOptions }) {
+  getOrder(params: { id: string; options?: FindOrdersOptions }) {
     return new GetOrderUseCase(this.ordersRepository).execute(params);
   }
 

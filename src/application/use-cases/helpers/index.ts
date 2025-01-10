@@ -101,5 +101,46 @@ export default function setupOdersQuery(filter: FindOrdersFilter = {}) {
     Object.keys(totalAmount).length && (query.totalAmount = totalAmount);
   }
 
+  if (filter?.search && typeof filter.search === 'string') {
+    query.OR = [
+      {
+        name: {
+          contains: filter.search,
+          mode: 'insensitive',
+        },
+      },
+      {
+        email: {
+          contains: filter.search,
+          mode: 'insensitive',
+        },
+      },
+      {
+        phone: {
+          contains: filter.search,
+          mode: 'insensitive',
+        },
+      },
+      {
+        refNumber: {
+          contains: filter.search,
+          mode: 'insensitive',
+        },
+      },
+      // {
+      //   productName: {
+      //     contains: filter.search,
+      //     mode: 'insensitive',
+      //   },
+      // },
+      // {
+      //   productSKU: {
+      //     contains: filter.search,
+      //     mode: 'insensitive',
+      //   },
+      // },
+    ];
+  }
+
   return query;
 }

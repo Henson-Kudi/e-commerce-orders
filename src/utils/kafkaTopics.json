@@ -1,12 +1,19 @@
 {
-  "orderUpdated": "orderUpdated",
-  "orderCreated": "orderCreated",
-  "orderDeleted": "orderDeleted",
-  "orderCancelled": "orderCancelled",
-  "ordersDeleted": "ordersDeleted",
+  "orderUpdated": "order.updated",
+  "orderCreated": "order.created",
+  "orderDeleted": "order.deleted",
+  "orderCancelled": "order.cancelled",
+  "ordersDeleted": "orders.deleted",
 
-  "stripePaymentSucceeded": "stripePaymentSucceeded",
-  "codPaymentCreated": "codPaymentCreated",
-  "tabbyPaymentSucceeded": "tabbyPaymentSucceeded",
-  "paymentUpdated": "paymentUpdated"
+  "subscriptions":{
+    "paymentUpdated": "payment.updated",
+    "paymentCreated": "payment.created",
+    "paymentDeleted": "payment.deleted",
+    "paymentCancelled": "payment.cancelled",
+    "paymentSuccess": "payment.success",
+    "paymentFailed": "payment.failed",
+    "paymentsDeleted": "payments.deleted"
+  }
+
+  
 }
